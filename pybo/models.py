@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class Question(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    modify_date = models.DateTimeField(null=True, blank=True) #수정 일시를 의미. null,blank = 어떤조건으로든 값을 비어둘 수 있음을 의미. 
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
@@ -13,6 +14,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    modify_date = models.DateTimeField(null=True, blank=True) #수정 일시를 의미. null,blank = 어떤조건으로든 값을 비어둘 수 있음을 의미. 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
