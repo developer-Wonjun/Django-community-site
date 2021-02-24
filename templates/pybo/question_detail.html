@@ -8,6 +8,12 @@
                 {{ question.content }}
             </div>
             <div class='d-flex justify-content-end'>
+                {% if question.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">수정된 시각</div>
+                    <div>{{  question.modify_date }}</div>
+                </div>
+                {% endif %}
                 <div class='badge badge-light p-2 text-left'>
                     <div class="mb-2">작성자 : {{question.author.username}}</div>
                     <div>{{ question.create_date }}</div>
@@ -19,6 +25,28 @@
                 <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pybo:question_delete' question.id %}">삭제</a>
             </div>
             {% endif %}
+            {% if question.comment_set.count > 0 %}
+            <div class="mt-3">
+                {% for comment in question.comment_set.all %}
+                    <div class="comment py-2 text-muted">
+                        <span style = "white-space: pre-line;">{{ comment.content }}</span>
+                        <span>
+                            - {{comment.author}}, {{comment.create_date}}
+                            {% if comment.modify_date %}
+                            (수정:{{comment.modify_date}})
+                            {% endif %}
+                        </span>
+                        {% if request.user == comment.author %}
+                        <a href="{% url 'pybo:comment_modify_question' comment.id %}" class="small">수정</a>
+                        <a href="#" class="small delete" data-uri="{% url 'pybo:comment_delete_question' comment.id %}">삭제</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div>
+                <a href="{% url 'pybo:comment_create_question' question.id %}" class="small"><small>댓글 추가 ..</small></a>
+            </div>
         </div>
     </div>
     <h5 class='border-bottom my-3 py-2'>
@@ -31,12 +59,23 @@
                 {{ answer.content }}
             </div>
             <div class='d-flex justify-content-end'>
+                {% if answer.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">수정된 시각</div>
+                    <div>{{  answer.modify_date }}</div>
+                </div>
+                {% endif %}
                 <div class='badge badge-light p-2 text-left'>
                     <div class="mb-2">작성자 : {{ answer.author.username }}</div>
                     <div>{{ answer.create_date }}</div>
                 </div>
             </div>
-            
+            {% if request.user == answer.author %}
+            <div class="my-3">
+                <a href="{% url 'pybo:answer_modify' answer.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
